@@ -14,3 +14,5 @@ Phase 0: Setup
 4th phase: Post on Fediverse (Mastodon)
 
 5th phase: Post on Facebook
+
+6th phase: Dockerize
