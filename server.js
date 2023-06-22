@@ -6,7 +6,7 @@ const app = express();
 const axios = require('axios');
 app.use(bodyParser.json());
 
-const { twitterClient } = require("./clients/twitterClient.js");
+const twitterClient = require("./clients/twitterClient.js");
 const mastodonClient = require("./clients/mastodonClient.js");
 
 async function post_check(id) {
