@@ -14,7 +14,18 @@ async function post_check(id) {
     fs.readFile('data/posts', 'utf8', (err, data) => {
       if (err) {
         if (err.code === 'ENOENT') {
-          console.log('[FILES] Posts file not found, creating...');
+          console.log('[FILES] Posts file not found!');
+
+          if (!fs.existsSync('data')){
+            fs.mkdir('data', (err) => {
+              if (err) {
+                console.error('[FILES] Error creating data directory:', err);
+              } else {
+                console.log('[FILES] Data directory created successfully!');
+              }
+            });
+          }
+
           fs.writeFile('data/posts', String(id) + '\n', (err) => {
             if (err) {
               console.error('[FILES] Error creating posts file:', err);
