@@ -9,34 +9,39 @@ app.use(bodyParser.json());
 const twitterClient = require("./clients/twitterClient.js");
 const mastodonClient = require("./clients/mastodonClient.js");
 
+function write_file(id) {
+  fs.writeFile('data/posts', String(id) + '\n', (err) => {
+    if (err) {
+      console.error('[FILES] Error creating posts file:', err);
+    } else {
+      console.log('[FILES] Posts file created with success!');
+      console.log(`[FILES] Posts file updated with id ${id}!`);
+    }
+  });
+}
+
 async function post_check(id) {
   return new Promise((resolve, reject) => {
     fs.readFile('data/posts', 'utf8', (err, data) => {
       if (err) {
         if (err.code === 'ENOENT') {
           console.log('[FILES] Posts file not found!');
-
+          
           if (!fs.existsSync('data')){
             fs.mkdir('data', (err) => {
               if (err) {
                 console.error('[FILES] Error creating data directory:', err);
               } else {
                 console.log('[FILES] Data directory created successfully!');
+                write_file(id);
+                resolve(true);
               }
             });
           }
-
-          fs.writeFile('data/posts', String(id) + '\n', (err) => {
-            if (err) {
-              console.error('[FILES] Error creating posts file:', err);
-              //reject(err);
-              resolve(false);
-            } else {
-              console.log('[FILES] Posts file created with success!');
-              console.log(`[FILES] Posts file updated with id ${id}!`);
-              resolve(true);
-            }
-          });
+          else {
+            write_file(id);
+            resolve(true);
+          }
         } else {
           console.error('[FILES] Error reading posts file:', err);
           //reject(err);
@@ -80,7 +85,7 @@ app.post('/', async (req, res) => {
       var post = title + '\n' + text;
       console.log('[INFO] Post: ' + post);
 
-      if (process.env.SOCIALS.includes('twitter')){
+      if (true){
         if (post.length > 280){
           console.log('[ERR] Post length surpasses limit imposed by Twitter')
         } else {  
@@ -93,7 +98,7 @@ app.post('/', async (req, res) => {
         }
       }
 
-      if (process.env.SOCIALS.includes('fediverse')){
+      if (true){
         
         if (post.length > 500){
           console.log('[ERR] Post length surpasses limit imposed by Mastodon')
@@ -112,13 +117,13 @@ app.post('/', async (req, res) => {
         }
       }
 
-      if (process.env.SOCIALS.includes('facebook')){  
+      if (true){  
 
         if (post.length > 63026){
           console.log('[ERR] Post length surpasses limit imposed by Facebook')
         }  else {
 
-          axios.post("https://graph.facebook.com/v16.0/me/feed?access_token="+process.env.FACEBOOK_ACCESS_TOKEN, {
+          axios.post("https://graph.facebook.com/v16.0/me/feed?access_token=EABf7JBfWxqMBAALCZAxsuzqicUaQGmT1flZCh7pddKFjq98ieaW4xlOb0ehLBEmXitUiL53ZCH9PaoZAlO6e0euv0lZBZCtAzK3cEOOnn4TExU9aDnTvJbqC2eZBEYzIcM6ACxWZChm9JKiO3aZCas8mqNMqsZAHwiuYtATF8KByRiNouTUgGB8M0mKZCQ1ne7hVzcZD"+process.env.FACEBOOK_ACCESS_TOKEN, {
             message: post
           })
           .then((response) => {
